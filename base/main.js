@@ -1,6 +1,4 @@
 var ShaderMain = function () {
-  console.log("This is working");
-
   /** @type {HTMLCanvasElement} */
   var canvas = document.getElementById("webgl-canvas");
   /** @type {WebGLRenderingContext} */
