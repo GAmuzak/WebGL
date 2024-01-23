@@ -1,63 +1,97 @@
+"use strict";
+
 const ShaderMain = function () {
   /** @type {HTMLCanvasElement} */
   const canvas = document.getElementById("webgl-canvas");
   /** @type {WebGLRenderingContext} */
   const gl = canvas.getContext("webgl");
 
+  const recursiveSlider = document.getElementById("recursionSlider");
+  const depthValue = document.getElementById("depthValue");
+
   checkGLLoad(gl);
 
   gl.clearColor(0.4, 0.4, 0.4, 1.0);
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
   // Making shaders
 
   const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderText);
-  const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderText);
+  const fragmentShader = createShader(
+    gl,
+    gl.FRAGMENT_SHADER,
+    fragmentShaderText
+  );
 
   const program = setGLProgram(vertexShader, fragmentShader, gl);
 
+  const positionAttribLocation = gl.getAttribLocation(program, "vertPosition");
+  gl.useProgram(program);
+
+  const positionBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+  gl.enableVertexAttribArray(positionAttribLocation);
+  gl.vertexAttribPointer(positionAttribLocation, 2, gl.FLOAT, false, 0, 0);
+
   // Create buffer
 
-  // Each one of these are basically X,Y,R,G,B
-  const triangleVertices = [
-    0.0, 0.5, 1.0, 0.0, 0.0, -0.5, -0.5, 0.0, 1.0, 0.0, 0.5, -0.5, 0.0, 0.0,
-    1.0,
+  const EDGE_POINTS = [
+    [-1, -1],
+    [1, -1],
+    [0, 1],
   ];
-  const trianlgeVertexBufferObject = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, trianlgeVertexBufferObject);
-  gl.bufferData(
-    gl.ARRAY_BUFFER,
-    new Float32Array(triangleVertices),
-    gl.STATIC_DRAW
-  );
 
-  const positionAttribLocation = gl.getAttribLocation(program, "vertPosition");
-  const colorAttribLocation = gl.getAttribLocation(program, "vertColor");
-  gl.vertexAttribPointer(
-    positionAttribLocation,
-    2,
-    gl.FLOAT,
-    gl.FALSE,
-    5 * Float32Array.BYTES_PER_ELEMENT,
-    0
-  );
+  const pointList = [];
 
-  gl.vertexAttribPointer(
-    colorAttribLocation,
-    3,
-    gl.FLOAT,
-    gl.FALSE,
-    5 * Float32Array.BYTES_PER_ELEMENT,
-    2 * Float32Array.BYTES_PER_ELEMENT
-  );
+  function mix(pointA, pointB, mix) {
+    const newPointA = pointA[0] * mix + pointB[0] * (1 - mix);
+    const newPointB = pointA[1] * mix + pointB[1] * (1 - mix);
+    return [newPointA, newPointB];
+  }
 
-  gl.enableVertexAttribArray(positionAttribLocation);
-  gl.enableVertexAttribArray(colorAttribLocation);
-
+  function generateTriangles(edgePoints, depth) {
+    if (depth === 0) {
+      pointList.push(...edgePoints[0]);
+      pointList.push(...edgePoints[1]);
+      return pointList.push(...edgePoints[2]);
+    }
+    const middlePointList = [
+      mix(edgePoints[0], edgePoints[1], 0.5),
+      mix(edgePoints[0], edgePoints[2], 0.5),
+      mix(edgePoints[1], edgePoints[2], 0.5),
+    ];
+    depth--;
+    generateTriangles(
+      [edgePoints[0], middlePointList[0], middlePointList[1]],
+      depth
+    );
+    generateTriangles(
+      [edgePoints[1], middlePointList[0], middlePointList[2]],
+      depth
+    );
+    generateTriangles(
+      [edgePoints[2], middlePointList[1], middlePointList[2]],
+      depth
+    );
+  }
   // Main render loop
 
-  gl.useProgram(program);
-  gl.drawArrays(gl.TRIANGLES, 0, 3);
+  let recursiveDepth = parseInt(recursiveSlider.value);
+  depthValue.textContent = recursiveDepth;
+
+  recursiveSlider.addEventListener("input", function () {
+    recursiveDepth = parseInt(recursiveSlider.value);
+    depthValue.textContent = recursiveDepth;
+    updateCanvas();
+  });
+
+  function updateCanvas() {
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    pointList.length = 0;
+    generateTriangles(EDGE_POINTS, recursiveDepth);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(pointList), gl.STATIC_DRAW);
+    gl.drawArrays(gl.TRIANGLES, 0, pointList.length / 2);
+  }
+  updateCanvas();
 };
 
 /*
@@ -70,12 +104,9 @@ const vertexShaderText = [
   "precision mediump float;",
   "",
   "attribute vec2 vertPosition;",
-  "attribute vec3 vertColor;",
-  "varying vec3 fragColor;",
   "",
   "void main()",
   "{",
-  "   fragColor = vertColor;",
   "   gl_Position = vec4(vertPosition, 0.0, 1.0);",
   "}",
 ].join("\n");
@@ -83,10 +114,9 @@ const vertexShaderText = [
 const fragmentShaderText = [
   "precision mediump float;",
   "",
-  "varying vec3 fragColor;",
   "void main()",
   "{",
-  "   gl_FragColor = vec4(fragColor, 1.0);",
+  "   gl_FragColor = vec4(0.7, 0.7, 0.9, 1.0);",
   "}",
 ].join("\n");
 
@@ -109,11 +139,12 @@ function checkGLLoad(gl) {
   }
 }
 
-function createShader(gl, type, shaderSource){
+function createShader(gl, type, shaderSource) {
   const shader = gl.createShader(type);
   gl.shaderSource(shader, shaderSource);
   gl.compileShader(shader);
-  const shaderType = type === gl.VERTEX_SHADER ? "Vertex Shader" : "Fragment Shader";
+  const shaderType =
+    type === gl.VERTEX_SHADER ? "Vertex Shader" : "Fragment Shader";
   checkShaderValidity(shader, gl, shaderType);
   return shader;
 }

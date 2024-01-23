@@ -3,6 +3,7 @@
   <head>
     <title>WebGL Project</title>
   </head>
+
   <body onload="ShaderMain();">
     x-------------------------------------------------------------------------x
     <br />
@@ -11,6 +12,18 @@
     </canvas>
     <br />
     x-------------------------------------------------------------------------x
+    <br />
+    <label for="recursionSlider">Select a value:</label>
+    <input
+      type="range"
+      id="recursionSlider"
+      min="1"
+      max="8"
+      value="4"
+      step="1"
+    />
+    <p id="depthValue">Current Value: 4</p>
+
     <script src="../lib/webgl-utils.js"></script>
     <script src="../lib/webgl-debug.js"></script>
     <script src="../lib/cuon-utils.js"></script>
