@@ -73,7 +73,8 @@ const ShaderMain = function () {
       depth
     );
   }
-  // Main render loop
+
+  //slider functionality
 
   let recursiveDepth = parseInt(recursiveSlider.value);
   depthValue.textContent = recursiveDepth;
@@ -83,6 +84,8 @@ const ShaderMain = function () {
     depthValue.textContent = recursiveDepth;
     updateCanvas();
   });
+
+  // Main render loop
 
   function updateCanvas() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
