@@ -2,6 +2,5 @@
 /// <reference path = "sideCircles.js"/>
 
 const entry = function () {
-    mainCirc();
     sideCirc();
 };

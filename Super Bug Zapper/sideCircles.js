@@ -9,6 +9,9 @@ const sideCirc = function () {
 
   checkGLLoad(gl);
 
+  gl.clearColor(0.0, 0.0, 0.0, 1.0);
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
   const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderText);
   const fragmentShader = createShader(
     gl,
@@ -50,10 +53,12 @@ const sideCirc = function () {
   const startTime = performance.now();
 
   function animate() {
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
+	  gl.clearColor(0.0, 0.0, 0.0, 1.0);
+	  gl.clear(gl.COLOR_BUFFER_BIT);
+	  generateMainCircle(gl, posnAttribLoc, program);
     const currentTime = performance.now();
     const elapsed = (currentTime - startTime) / 1000;
+    // Draw the main circle here first
     // Draw each random circle with its growing radius
     randomCircles.forEach(function (randomCircle) {
       const growingRadius = Math.min(elapsed / 5, 1.0) * 0.2 + 0.0;
@@ -79,9 +84,9 @@ const sideCirc = function () {
       gl.bindBuffer(gl.ARRAY_BUFFER, randomCircleBuffer);
       gl.vertexAttribPointer(posnAttribLoc, 2, gl.FLOAT, false, 0, 0);
 
-      const uLoc = gl.getUniformLocation(program, "uColor");
+      const uCol = gl.getUniformLocation(program, "uColor");
       // Set the random circle color as a uniform variable
-      gl.uniform4fv(uLoc, randomCircle.color);
+      gl.uniform4fv(uCol, randomCircle.color);
 
       gl.drawArrays(gl.TRIANGLE_FAN, 0, mainCircleSegments);
     });
@@ -92,3 +97,15 @@ const sideCirc = function () {
 
   animate(); // Start the animation loop
 };
+function generateMainCircle(gl, posnAttribLoc, program) {
+	const radius = 0.8;
+	const segments = 100;
+	const positions = generateMainCirclePositions(radius, segments);
+	const mainCircleBuffer = createBuffer(gl, positions);
+	gl.bindBuffer(gl.ARRAY_BUFFER, mainCircleBuffer);
+	gl.vertexAttribPointer(posnAttribLoc, 2, gl.FLOAT, false, 0, 0);
+	const mainCircleColor = [1.0, 1.0, 1.0, 1.0];
+	gl.uniform4fv(gl.getUniformLocation(program, "uColor"), mainCircleColor);
+	gl.drawArrays(gl.TRIANGLE_FAN, 0, segments);
+}
+
