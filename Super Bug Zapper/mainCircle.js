@@ -52,5 +52,5 @@ const ShaderMain = function () {
   gl.useProgram(program);
   gl.uniform4fv(gl.getUniformLocation(program, "uColor"), mainCircleColor);
   gl.drawArrays(gl.TRIANGLE_FAN, 0, segments);
-  sideCirlces();
+  sideCirlces(gl);
 };

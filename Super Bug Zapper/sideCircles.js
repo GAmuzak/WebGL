@@ -1,13 +1,7 @@
 /// <reference path = "utils.js"/>
 /// <reference path = "shaders.js"/>
 
-const sideCirlces = function () {
-  /** @type {HTMLCanvasElement} */
-  const canvas = document.getElementById("webgl-canvas");
-  /** @type {WebGLRenderingContext} */
-  const gl = canvas.getContext("webgl");
-
-  checkGLLoad(gl);
+const sideCirlces = function (gl) {
 
   const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderText);
   const fragmentShader = createShader(

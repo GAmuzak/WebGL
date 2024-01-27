@@ -1,3 +1,5 @@
+// general webgl utils
+
 function checkGLLoad(gl) {
   if (!gl) {
     console.log("WebGL not supported, using experimental");
@@ -44,6 +46,8 @@ function setGLProgram(vertexShader, fragmentShader, gl) {
   }
   return program;
 }
+
+// project specifc
 
 function generateMainCirclePositions(radius, segments) {
   const positions = [];
