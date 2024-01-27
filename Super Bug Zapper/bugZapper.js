@@ -40,25 +40,12 @@ const ShaderMain = function () {
 
   gl.enableVertexAttribArray(posnAttribLoc);
 
-  const size = 2;
-  const type = gl.FLOAT;
-  const normalize = false;
-  const stride = 0;
-  const offset = 0;
-  gl.vertexAttribPointer(
-    posnAttribLoc,
-    size,
-    type,
-    normalize,
-    stride,
-    offset
-  );
-
+  gl.vertexAttribPointer(posnAttribLoc, 2, gl.FLOAT, false, 0, 0);
 
   // Main render loop
 
   gl.useProgram(program);
-  gl.drawArrays(gl.TRIANGLE_FAN, 0, positions.length/size);
+  gl.drawArrays(gl.TRIANGLE_FAN, 0, segments);
 };
 
 /*
