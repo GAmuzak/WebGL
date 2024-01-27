@@ -16,3 +16,12 @@ const fragmentShaderText = [
   "   gl_FragColor = uColor;",
   "}",
 ].join("\n");
+
+const fragmentShaderTextSmallerCircle = [
+  "precision mediump float;",
+  "uniform vec4 uColor2;",
+  "void main()",
+  "{",
+  "   gl_FragColor = uColor2;",
+  "}",
+].join("\n");

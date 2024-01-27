@@ -1,13 +1,19 @@
 /// <reference path = "utils.js"/>
 /// <reference path = "shaders.js"/>
 
-const sideCirlces = function (gl) {
+const sideCirc = function () {
+  /** @type {HTMLCanvasElement} */
+  const canvas = document.getElementById("webgl-canvas");
+  /** @type {WebGLRenderingContext} */
+  const gl = canvas.getContext("webgl");
+
+  checkGLLoad(gl);
 
   const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderText);
   const fragmentShader = createShader(
     gl,
     gl.FRAGMENT_SHADER,
-    fragmentShaderText
+    fragmentShaderTextSmallerCircle
   );
   const program = setGLProgram(vertexShader, fragmentShader, gl);
 
@@ -20,39 +26,67 @@ const sideCirlces = function (gl) {
 
   gl.useProgram(program);
 
-  // Generate and draw random circles on the circumference
-  const numRandomCircles = getRandomInt(5, 10); // Adjust the range as needed
+  const randomCircles = []; // Array to store information about random circles
+  const numRandomCircles = getRandomInt(5, 10);
 
   for (let i = 0; i < numRandomCircles; i++) {
-    const randomRadius = Math.random() * 0.2 + 0.1; // Random radius between 0.1 and 0.3
+    const randomRadius = 0.1; // Initial radius, can be adjusted
     const randomColor = getRandomColor();
-    const randomAngle = Math.random() * 2 * Math.PI; // Random angle for the center position
+    const randomAngle = Math.random() * 2 * Math.PI;
 
     const centerX = mainCircleRadius * Math.cos(randomAngle);
     const centerY = mainCircleRadius * Math.sin(randomAngle);
 
-    const randomCirclePositions = generateMainCirclePositions(
-      mainCircleRadius,
-      mainCircleSegments
-    );
+    const randomCircle = {
+      centerX: centerX,
+      centerY: centerY,
+      radius: randomRadius,
+      color: randomColor,
+    };
 
-    // Translate the random circle positions to the circumference
-    for (let j = 0; j < randomCirclePositions.length; j += 2) {
-      randomCirclePositions[j] =
-        centerX + randomRadius * randomCirclePositions[j];
-      randomCirclePositions[j + 1] =
-        centerY + randomRadius * randomCirclePositions[j + 1];
-    }
-
-    const randomCircleBuffer = createBuffer(gl, randomCirclePositions);
-
-    // Use the correct buffer for drawing
-    gl.bindBuffer(gl.ARRAY_BUFFER, randomCircleBuffer);
-    gl.vertexAttribPointer(posnAttribLoc, 2, gl.FLOAT, false, 0, 0);
-
-    // Set the random circle color as a uniform variable
-    gl.uniform4fv(gl.getUniformLocation(program, "uColor"), randomColor);
-
-    gl.drawArrays(gl.TRIANGLE_FAN, 0, mainCircleSegments);
+    randomCircles.push(randomCircle);
   }
+
+  const startTime = performance.now();
+
+  function animate() {
+    const currentTime = performance.now();
+    const elapsed = (currentTime - startTime) / 1000;
+    // Draw each random circle with its growing radius
+    randomCircles.forEach(function (randomCircle) {
+      const growingRadius = Math.min(elapsed / 5, 1.0) * 0.2 + 0.0;
+      randomCircle.radius = growingRadius;
+
+      // Translate the positions of the main circle to create the positions for the random circle on the circumference
+      const randomCirclePositions = generateMainCirclePositions(
+        mainCircleRadius,
+        mainCircleSegments
+      );
+
+      for (let j = 0; j < randomCirclePositions.length; j += 2) {
+        randomCirclePositions[j] =
+          randomCircle.centerX + randomCircle.radius * randomCirclePositions[j];
+        randomCirclePositions[j + 1] =
+          randomCircle.centerY +
+          randomCircle.radius * randomCirclePositions[j + 1];
+      }
+
+      const randomCircleBuffer = createBuffer(gl, randomCirclePositions);
+
+      // Use the correct buffer for drawing
+      gl.bindBuffer(gl.ARRAY_BUFFER, randomCircleBuffer);
+      gl.vertexAttribPointer(posnAttribLoc, 2, gl.FLOAT, false, 0, 0);
+
+      const uLoc = gl.getUniformLocation(program, "uColor2");
+      // Set the random circle color as a uniform variable
+      gl.uniform4fv(uLoc, randomCircle.color);
+
+      gl.drawArrays(gl.TRIANGLE_FAN, 0, mainCircleSegments);
+    });
+    if (elapsed < 5) {
+      requestAnimationFrame(animate); // Continue the animation loop
+    }
+  }
+
+  animate(); // Start the animation loop
 };

@@ -1,7 +1,7 @@
 /// <reference path = "utils.js"/>
 /// <reference path = "shaders.js"/>
 
-const ShaderMain = function () {
+const mainCirc = function () {
   /** @type {HTMLCanvasElement} */
   const canvas = document.getElementById("webgl-canvas");
   /** @type {WebGLRenderingContext} */
@@ -9,8 +9,8 @@ const ShaderMain = function () {
 
   checkGLLoad(gl);
 
-  gl.clearColor(0.0, 0.0, 0.0, 1.0);
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  // gl.clearColor(0.0, 0.0, 0.0, 1.0);
+  // gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
   // Making shaders
 
@@ -28,14 +28,7 @@ const ShaderMain = function () {
 
   const radius = 0.8;
   const segments = 100;
-  const positions = [];
-
-  for (let i = 0; i <= segments; i++) {
-    const theta = (i / segments) * 2 * Math.PI;
-    const x = radius * Math.cos(theta);
-    const y = radius * Math.sin(theta);
-    positions.push(x, y);
-  }
+  const positions = generateMainCirclePositions(radius, segments);
 
   //setting buffer data
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
@@ -52,5 +45,4 @@ const ShaderMain = function () {
   gl.useProgram(program);
   gl.uniform4fv(gl.getUniformLocation(program, "uColor"), mainCircleColor);
   gl.drawArrays(gl.TRIANGLE_FAN, 0, segments);
-  sideCirlces(gl);
 };
