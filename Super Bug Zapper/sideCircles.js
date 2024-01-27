@@ -25,7 +25,6 @@ const sideCirlces = function () {
   gl.vertexAttribPointer(posnAttribLoc, 2, gl.FLOAT, false, 0, 0);
 
   gl.useProgram(program);
-  gl.drawArrays(gl.TRIANGLE_FAN, 0, mainCircleSegments);
 
   // Generate and draw random circles on the circumference
   const numRandomCircles = getRandomInt(5, 10); // Adjust the range as needed
