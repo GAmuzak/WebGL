@@ -13,7 +13,7 @@ const sideCirc = function () {
   const fragmentShader = createShader(
     gl,
     gl.FRAGMENT_SHADER,
-    fragmentShaderTextSmallerCircle
+    fragmentShaderText
   );
   const program = setGLProgram(vertexShader, fragmentShader, gl);
 
@@ -50,6 +50,8 @@ const sideCirc = function () {
   const startTime = performance.now();
 
   function animate() {
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
     const currentTime = performance.now();
     const elapsed = (currentTime - startTime) / 1000;
     // Draw each random circle with its growing radius
@@ -77,7 +79,7 @@ const sideCirc = function () {
       gl.bindBuffer(gl.ARRAY_BUFFER, randomCircleBuffer);
       gl.vertexAttribPointer(posnAttribLoc, 2, gl.FLOAT, false, 0, 0);
 
-      const uLoc = gl.getUniformLocation(program, "uColor2");
+      const uLoc = gl.getUniformLocation(program, "uColor");
       // Set the random circle color as a uniform variable
       gl.uniform4fv(uLoc, randomCircle.color);
 
