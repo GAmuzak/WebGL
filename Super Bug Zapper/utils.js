@@ -44,3 +44,32 @@ function setGLProgram(vertexShader, fragmentShader, gl) {
   }
   return program;
 }
+
+function generateMainCirclePositions(radius, segments) {
+  const positions = [];
+  for (let i = 0; i <= segments; i++) {
+    const theta = (i / segments) * 2 * Math.PI;
+    const x = radius * Math.cos(theta);
+    const y = radius * Math.sin(theta);
+    positions.push(x, y);
+  }
+  return positions;
+}
+
+function createBuffer(gl, data) {
+  const buffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);
+  return buffer;
+}
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function getRandomColor() {
+  const r = Math.random();
+  const g = Math.random();
+  const b = Math.random();
+  return [r, g, b, 1.0];
+}

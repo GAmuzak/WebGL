@@ -1,3 +1,6 @@
+/// <reference path = "utils.js"/>
+/// <reference path = "shaders.js"/>
+
 const ShaderMain = function () {
   /** @type {HTMLCanvasElement} */
   const canvas = document.getElementById("webgl-canvas");
