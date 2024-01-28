@@ -21,7 +21,7 @@ const sideCirc = function () {
   const program = setGLProgram(vertexShader, fragmentShader, gl);
 
   const mainCircleRadius = 0.8;
-  const mainCircleSegments = 100;
+  const mainCircleSegments = 360;
 
   const posnAttribLoc = gl.getAttribLocation(program, "vertPosition");
   gl.enableVertexAttribArray(posnAttribLoc);
@@ -29,6 +29,58 @@ const sideCirc = function () {
 
   gl.useProgram(program);
 
+  const randomCircles = generateRandomCircles(mainCircleRadius);
+
+  const startTime = performance.now();
+
+  function animate() {
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    generateMainCircle(
+      gl,
+      posnAttribLoc,
+      program,
+      mainCircleRadius,
+      mainCircleSegments
+    );
+    const currentTime = performance.now();
+    const elapsed = (currentTime - startTime) / 1000;
+    randomCircles.forEach((randomCircle) => {
+      const growingRadius = Math.min(elapsed / 5, 1.0) * 0.2 + 0.0;
+      randomCircle.radius = growingRadius;
+
+      const randomCirclePositions = generateMainCirclePositions(
+        mainCircleRadius,
+        mainCircleSegments
+      );
+
+      for (let j = 0; j < randomCirclePositions.length; j += 2) {
+        randomCirclePositions[j] =
+          randomCircle.centerX + randomCircle.radius * randomCirclePositions[j];
+        randomCirclePositions[j + 1] =
+          randomCircle.centerY +
+          randomCircle.radius * randomCirclePositions[j + 1];
+      }
+
+      const randomCircleBuffer = createBuffer(gl, randomCirclePositions);
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, randomCircleBuffer);
+      gl.vertexAttribPointer(posnAttribLoc, 2, gl.FLOAT, false, 0, 0);
+
+      const uCol = gl.getUniformLocation(program, "uColor");
+      gl.uniform4fv(uCol, randomCircle.color);
+
+      gl.drawArrays(gl.TRIANGLE_FAN, 0, mainCircleSegments);
+    });
+    if (elapsed < 5) {
+      requestAnimationFrame(animate);
+    }
+  }
+
+  animate();
+};
+
+function generateRandomCircles(mainCircleRadius) {
   const randomCircles = []; // Array to store information about random circles
   const numRandomCircles = getRandomInt(5, 10);
 
@@ -49,63 +101,15 @@ const sideCirc = function () {
 
     randomCircles.push(randomCircle);
   }
-
-  const startTime = performance.now();
-
-  function animate() {
-	  gl.clearColor(0.0, 0.0, 0.0, 1.0);
-	  gl.clear(gl.COLOR_BUFFER_BIT);
-	  generateMainCircle(gl, posnAttribLoc, program);
-    const currentTime = performance.now();
-    const elapsed = (currentTime - startTime) / 1000;
-    // Draw the main circle here first
-    // Draw each random circle with its growing radius
-    randomCircles.forEach(function (randomCircle) {
-      const growingRadius = Math.min(elapsed / 5, 1.0) * 0.2 + 0.0;
-      randomCircle.radius = growingRadius;
-
-      // Translate the positions of the main circle to create the positions for the random circle on the circumference
-      const randomCirclePositions = generateMainCirclePositions(
-        mainCircleRadius,
-        mainCircleSegments
-      );
-
-      for (let j = 0; j < randomCirclePositions.length; j += 2) {
-        randomCirclePositions[j] =
-          randomCircle.centerX + randomCircle.radius * randomCirclePositions[j];
-        randomCirclePositions[j + 1] =
-          randomCircle.centerY +
-          randomCircle.radius * randomCirclePositions[j + 1];
-      }
-
-      const randomCircleBuffer = createBuffer(gl, randomCirclePositions);
-
-      // Use the correct buffer for drawing
-      gl.bindBuffer(gl.ARRAY_BUFFER, randomCircleBuffer);
-      gl.vertexAttribPointer(posnAttribLoc, 2, gl.FLOAT, false, 0, 0);
-
-      const uCol = gl.getUniformLocation(program, "uColor");
-      // Set the random circle color as a uniform variable
-      gl.uniform4fv(uCol, randomCircle.color);
-
-      gl.drawArrays(gl.TRIANGLE_FAN, 0, mainCircleSegments);
-    });
-    if (elapsed < 5) {
-      requestAnimationFrame(animate); // Continue the animation loop
-    }
-  }
-
-  animate(); // Start the animation loop
-};
-function generateMainCircle(gl, posnAttribLoc, program) {
-	const radius = 0.8;
-	const segments = 100;
-	const positions = generateMainCirclePositions(radius, segments);
-	const mainCircleBuffer = createBuffer(gl, positions);
-	gl.bindBuffer(gl.ARRAY_BUFFER, mainCircleBuffer);
-	gl.vertexAttribPointer(posnAttribLoc, 2, gl.FLOAT, false, 0, 0);
-	const mainCircleColor = [1.0, 1.0, 1.0, 1.0];
-	gl.uniform4fv(gl.getUniformLocation(program, "uColor"), mainCircleColor);
-	gl.drawArrays(gl.TRIANGLE_FAN, 0, segments);
+  return randomCircles;
 }
 
+function generateMainCircle(gl, posnAttribLoc, program, radius, segments) {
+  const positions = generateMainCirclePositions(radius, segments);
+  const mainCircleBuffer = createBuffer(gl, positions);
+  gl.bindBuffer(gl.ARRAY_BUFFER, mainCircleBuffer);
+  gl.vertexAttribPointer(posnAttribLoc, 2, gl.FLOAT, false, 0, 0);
+  const mainCircleColor = [1.0, 1.0, 1.0, 1.0];
+  gl.uniform4fv(gl.getUniformLocation(program, "uColor"), mainCircleColor);
+  gl.drawArrays(gl.TRIANGLE_FAN, 0, segments);
+}
