@@ -1,31 +1,34 @@
 /// <reference path = "utils.js"/>
 /// <reference path = "shaders.js"/>
 
-const circGen = function () {
+const circGen = function (minCircCount, maxCircCount, animSpeed) {
     /** @type {HTMLCanvasElement} */
     const canvas = document.getElementById("webgl-canvas");
     /** @type {WebGLRenderingContext} */
     const gl = canvas.getContext("webgl");
 
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
     const program = webGLSetup(gl);
+    gl.useProgram(program);
 
     const mainCircleRadius = 0.8;
     const mainCircleSegments = 360;
 
-    const randomCircles = generateRandomCircles(mainCircleRadius);
+    const randomCircles = generateRandomCircles(mainCircleRadius, minCircCount, maxCircCount);
 
     const posnAttribLoc = gl.getAttribLocation(program, "vertPosition");
     gl.enableVertexAttribArray(posnAttribLoc);
     gl.vertexAttribPointer(posnAttribLoc, 2, gl.FLOAT, false, 0, 0);
 
-    gl.useProgram(program);
 
     const startTime = performance.now();
 
     function animate() {
         generateMainCircle(gl, posnAttribLoc, program, mainCircleRadius, mainCircleSegments);
         const currentTime = performance.now();
-        const elapsed = (currentTime - startTime) / 1000;
+        const elapsed = (currentTime - startTime) / 1000 * animSpeed;
         randomCircles.forEach((randomCircle) => {
             drawAndGrowCircle(elapsed, randomCircle, mainCircleRadius, mainCircleSegments, gl, posnAttribLoc, program);
         });
