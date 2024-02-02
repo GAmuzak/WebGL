@@ -7,7 +7,25 @@ async function loadShaderFile(filePath)
       throw new Error(`Failed to load shader file: ${filePath}`);
     }
     return await response.text();
-  }
+}
+
+function setGLProgram(vertexShader, fragmentShader, gl) 
+{
+    const program = gl.createProgram();
+    gl.attachShader(program, vertexShader);
+    gl.attachShader(program, fragmentShader);
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+        console.error("Error linking program!\n", gl.getProgramInfoLog(program));
+        return;
+    }
+    gl.validateProgram(program);
+    if (!gl.getProgramParameter(program, gl.VALIDATE_STATUS)) {
+        console.error("Error validating program!\n", gl.getProgramInfoLog(program));
+        return;
+    }
+    return program;
+}
   
 function checkGLLoad(gl) 
 {
@@ -43,22 +61,7 @@ function checkShaderValidity(shader, gl, shaderType)
         gl.deleteShader(shader);
     }
 }
-function setGLProgram(vertexShader, fragmentShader, gl) {
-    const program = gl.createProgram();
-    gl.attachShader(program, vertexShader);
-    gl.attachShader(program, fragmentShader);
-    gl.linkProgram(program);
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-        console.error("Error linking program!\n", gl.getProgramInfoLog(program));
-        return;
-    }
-    gl.validateProgram(program);
-    if (!gl.getProgramParameter(program, gl.VALIDATE_STATUS)) {
-        console.error("Error validating program!\n", gl.getProgramInfoLog(program));
-        return;
-    }
-    return program;
-}
+
 
 // project specifc
 
@@ -94,7 +97,8 @@ function createBuffer(gl, data)
     return buffer;
 }
 
-function getRandomInt(min, max) {
+function getRandomInt(min, max) 
+{
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
