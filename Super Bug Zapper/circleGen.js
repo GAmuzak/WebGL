@@ -11,7 +11,6 @@ const circGen = function (minCircCount, maxCircCount, animSpeed) {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     const program = webGLSetup(gl);
-    gl.useProgram(program);
 
     const mainCircleRadius = 0.8;
     const mainCircleSegments = 360;
@@ -20,12 +19,12 @@ const circGen = function (minCircCount, maxCircCount, animSpeed) {
 
     const posnAttribLoc = gl.getAttribLocation(program, "vertPosition");
     gl.enableVertexAttribArray(posnAttribLoc);
-    gl.vertexAttribPointer(posnAttribLoc, 2, gl.FLOAT, false, 0, 0);
-
 
     const startTime = performance.now();
 
     function animate() {
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        gl.useProgram(program);
         generateMainCircle(gl, posnAttribLoc, program, mainCircleRadius, mainCircleSegments);
         const currentTime = performance.now();
         const elapsed = (currentTime - startTime) / 1000 * animSpeed;

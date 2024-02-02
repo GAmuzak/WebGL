@@ -8,8 +8,6 @@ function checkGLLoad(gl) {
             alert("Your browser does not support WebGL");
             return;
         }
-    } else {
-        console.log("WebGL loaded!");
     }
 }
 function createShader(gl, type, shaderSource) {
@@ -87,7 +85,6 @@ function generateMainCircle(gl, posnAttribLoc, program, radius, segments) {
 function generateRandomCircles(mainCircleRadius, minCircCount, maxCircCount) {
     const randomCircles = [];
     const numRandomCircles = getRandomInt(minCircCount, maxCircCount);
-    console.log(minCircCount + " " + maxCircCount + " " + numRandomCircles);
     for (let i = 0; i < numRandomCircles; i++) {
         const randomRadius = 0.1;
         const randomColor = getRandomColor();
