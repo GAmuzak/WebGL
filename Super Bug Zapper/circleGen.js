@@ -1,7 +1,7 @@
 /// <reference path = "utils.js"/>
 /// <reference path = "shaders.js"/>
 
-const circGen = function (minCircCount, maxCircCount, animSpeed) {
+const circGen = function (minCircCount, maxCircCount, animSpeed, finalVals) {
     /** @type {HTMLCanvasElement} */
     const canvas = document.getElementById("webgl-canvas");
     /** @type {WebGLRenderingContext} */
@@ -15,7 +15,7 @@ const circGen = function (minCircCount, maxCircCount, animSpeed) {
     const mainCircleRadius = 0.8;
     const mainCircleSegments = 360;
 
-    const randomCircles = generateRandomCircles(mainCircleRadius, minCircCount, maxCircCount);
+    const randomCircles = generateRandomCircles(mainCircleRadius, minCircCount, maxCircCount, finalVals);
 
     const posnAttribLoc = gl.getAttribLocation(program, "vertPosition");
     gl.enableVertexAttribArray(posnAttribLoc);
