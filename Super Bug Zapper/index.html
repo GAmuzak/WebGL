@@ -5,14 +5,22 @@
     <title>WebGL Project</title>
 </head>
 
-<body onload="circGen();">
+<body>
     x-------------------------------------------------------------------------------------------x
-    <br />
+    <br>
     <canvas id="webgl-canvas" width="500" height="500">
         Browser doesn't support HMTL5
     </canvas>
-    <br />
+    <br>
     x-------------------------------------------------------------------------------------------x
+    <br>
+    <input type="range" id="min-circ" min="1" max="5" value="3">
+    <p id="min-circ-value">Min circle count: 3</p>
+    <input type="range" id="max-circ" min="6" max="10" value="8">
+    <p id="max-circ-value">Max circle count: 3</p>
+    <input type="range" id="anim-speed" min="1" max="5" value="3">
+    <p id="anim-speed-value">Animation Speed: 3</p>
+    <script src="main.js"></script>
     <script src="circleGen.js"></script>
     <script src="utils.js"></script>
     <script src="shaders.js"></script>
