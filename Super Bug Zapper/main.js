@@ -1,6 +1,7 @@
 /// <reference path = "circleGen.js"/>
 
-const main = function () {
+const main = function () 
+{
     const minSlider = document.getElementById('min-circ');
     const minSliderText = document.getElementById('min-circ-value');
     const maxSlider = document.getElementById('max-circ');
