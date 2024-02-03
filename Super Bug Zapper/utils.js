@@ -1,4 +1,11 @@
 // general webgl utils
+async function loadShaderFile(filePath) {
+    const response = await fetch(filePath);
+    if (!response.ok) {
+      throw new Error(`Failed to load shader file: ${filePath}`);
+    }
+    return await response.text();
+  }
 
 function checkGLLoad(gl) {
     if (!gl) {
@@ -47,12 +54,12 @@ function setGLProgram(vertexShader, fragmentShader, gl) {
 
 // project specifc
 
-function webGLSetup(gl) {
+function webGLSetup(gl, vertexShaderText, fragmentShaderText) {
     checkGLLoad(gl);
 
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
+    
     const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderText);
     const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderText);
     const program = setGLProgram(vertexShader, fragmentShader, gl);
