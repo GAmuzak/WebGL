@@ -12,7 +12,8 @@ const ShaderMain = async function () {
     var vertexShader;
     var fragmentShader;
   
-    try {
+    try 
+    {
       const vertexShaderText = await loadShaderFile("vertex.glsl");
       const fragmentShaderText = await loadShaderFile("fragment.glsl");
   
