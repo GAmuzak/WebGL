@@ -1,5 +1,14 @@
 // general webgl utils
 
+
+async function loadShaderFile(filePath) {
+    const response = await fetch(filePath);
+    if (!response.ok) {
+        throw new Error(`Failed to load shader file: ${filePath}`);
+    }
+    return await response.text();
+}
+
 function checkGLLoad(gl) {
     if (!gl) {
         console.log("WebGL not supported, using experimental");
@@ -47,11 +56,14 @@ function setGLProgram(vertexShader, fragmentShader, gl) {
 
 // project specifc
 
-function webGLSetup(gl) {
+async function webGLSetup(gl) {
     checkGLLoad(gl);
 
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+    const vertexShaderText = await loadShaderFile("vertexShader.glsl");
+    const fragmentShaderText = await loadShaderFile("fragmentShader.glsl");
 
     const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderText);
     const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderText);

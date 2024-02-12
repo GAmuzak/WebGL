@@ -1,7 +1,6 @@
 /// <reference path = "utils.js"/>
-/// <reference path = "shaders.js"/>
 
-const circGen = function (minCircCount, maxCircCount, animSpeed, finalVals) {
+const circGen = async function (minCircCount, maxCircCount, animSpeed, finalVals) {
     /** @type {HTMLCanvasElement} */
     const canvas = document.getElementById("webgl-canvas");
     /** @type {WebGLRenderingContext} */
@@ -10,7 +9,7 @@ const circGen = function (minCircCount, maxCircCount, animSpeed, finalVals) {
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    const program = webGLSetup(gl);
+    const program = await webGLSetup(gl);
 
     const mainCircleRadius = 0.8;
     const mainCircleSegments = 360;
