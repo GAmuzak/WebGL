@@ -1,4 +1,5 @@
 /// <reference path = "utils.js"/>
+/// <reference path = "circleGenHelpers.js"/>
 
 const circGen = async function (minCircCount, maxCircCount, animSpeed, finalVals) {
     /** @type {HTMLCanvasElement} */
