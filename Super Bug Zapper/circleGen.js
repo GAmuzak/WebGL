@@ -1,9 +1,9 @@
 /// <reference path = "utils.js"/>
 /// <reference path = "circleGenHelpers.js"/>
 
-const circGen = async function (minCircCount, maxCircCount, animSpeed, finalVals) {
-    /** @type {HTMLCanvasElement} */
-    const canvas = document.getElementById("webgl-canvas");
+const circGen = async function (canvas, minCircCount, maxCircCount, animSpeed, finalVals) {
+    // /** @type {HTMLCanvasElement} */
+    // const canvas = document.getElementById("webgl-canvas");
     /** @type {WebGLRenderingContext} */
     const gl = canvas.getContext("webgl");
 
@@ -36,7 +36,7 @@ const circGen = async function (minCircCount, maxCircCount, animSpeed, finalVals
         }
     }
     animate();
-};
+}; 
 
 function drawAndGrowCircle(elapsed, randomCircle, mainCircleRadius, mainCircleSegments, gl, posnAttribLoc, program) {
     const growingRadius = Math.min(elapsed / 5, 1.0) * 0.2 + 0.0;

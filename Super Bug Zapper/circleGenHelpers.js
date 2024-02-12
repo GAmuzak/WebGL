@@ -1,3 +1,5 @@
+/// <reference path = "utils.js"/>
+
 async function webGLSetup(gl) {
     checkGLLoad(gl);
 
