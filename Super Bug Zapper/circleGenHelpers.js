@@ -43,14 +43,13 @@ function generateRandomCircles(mainCircleRadius, minCircCount, maxCircCount, fin
     const numRandomCircles = getRandomInt(minCircCount, maxCircCount);
     finalVals.textContent = 'Loaded program with circle count: ' + numRandomCircles;
     for (let i = 0; i < numRandomCircles; i++) {
-        const randomRadius = 0.1;
         const randomColor = getRandomColor();
         const randomAngle = Math.random() * 2 * Math.PI;
 
         const centerX = mainCircleRadius * Math.cos(randomAngle);
         const centerY = mainCircleRadius * Math.sin(randomAngle);
 
-        const randomCircle = { centerX: centerX, centerY: centerY, radius: randomRadius, color: randomColor, };
+        const randomCircle = { centerX: centerX, centerY: centerY, color: randomColor, };
 
         randomCircles.push(randomCircle);
     }
