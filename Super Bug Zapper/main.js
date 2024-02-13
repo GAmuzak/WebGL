@@ -34,7 +34,6 @@ const main = function () {
     }
 };
 
-
 function handleClick(event, canvas) {
     const canvasRect = canvas.getBoundingClientRect();
 
@@ -44,7 +43,17 @@ function handleClick(event, canvas) {
     const webglX = (mouseX / canvas.width) * 2 - 1;
     const webglY = 1 - (mouseY / canvas.height) * 2;
 
-    console.log("WebGL click at (x:", webglX, ", y:", webglY, ")");
+    killBacteria(webglX, webglY);
+}
 
-    console.log(randomCircles[2].radius);
+function killBacteria(clickX, clickY) {
+    randomCircles.forEach(randomCircle => {
+        const xDist = Math.pow(Math.abs(clickX - randomCircle.centerX), 2);
+        const yDist = Math.pow(Math.abs(clickY - randomCircle.centerY), 2);
+
+        if (Math.sqrt(xDist + yDist) < randomCircle.radius) {
+            const targetcircle = randomCircles.indexOf(randomCircle);
+            randomCircles.splice(targetcircle, 1);
+        }
+    });
 }
