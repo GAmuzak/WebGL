@@ -1,11 +1,10 @@
 /// <reference path = "utils.js"/>
 /// <reference path = "circleGenHelpers.js"/>
+/// <reference path = "gameLogic.js"/>
 
 var randomCircles;
 
 const circGen = async function (canvas, minCircCount, maxCircCount, animSpeed, finalVals) {
-    // /** @type {HTMLCanvasElement} */
-    // const canvas = document.getElementById("webgl-canvas");
     /** @type {WebGLRenderingContext} */
     const gl = canvas.getContext("webgl");
 
@@ -29,12 +28,15 @@ const circGen = async function (canvas, minCircCount, maxCircCount, animSpeed, f
         gl.useProgram(program);
         generateMainCircle(gl, posnAttribLoc, program, mainCircleRadius, mainCircleSegments);
         const currentTime = performance.now();
-        const elapsed = (currentTime - startTime) / 1000 * animSpeed;
+        const elapsed = (currentTime - startTime) * (animSpeed) / 3000;
         randomCircles.forEach((randomCircle) => {
             drawAndGrowCircle(elapsed, randomCircle, mainCircleRadius, mainCircleSegments, gl, posnAttribLoc, program);
         });
         if (elapsed < 5) {
             requestAnimationFrame(animate);
+        }
+        else {
+            checkLoseCriteria();
         }
     }
     animate();
@@ -50,7 +52,6 @@ function drawAndGrowCircle(elapsed, randomCircle, mainCircleRadius, mainCircleSe
         randomCirclePositions[i] = randomCircle.centerX + randomCircle.radius * randomCirclePositions[i];
         randomCirclePositions[i + 1] = randomCircle.centerY + randomCircle.radius * randomCirclePositions[i + 1];
     }
-
 
     const randomCircleBuffer = createBuffer(gl, randomCirclePositions);
 

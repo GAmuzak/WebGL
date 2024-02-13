@@ -4,19 +4,8 @@ const main = function () {
     /** @type {HTMLCanvasElement} */
     const canvas = document.getElementById("webgl-canvas");
 
-    const minSlider = document.getElementById('min-circ');
-    const minSliderText = document.getElementById('min-circ-value');
-    const maxSlider = document.getElementById('max-circ');
-    const maxSliderText = document.getElementById('max-circ-value');
-    const animSpeed = document.getElementById('anim-speed');
-    const animSpeedText = document.getElementById('anim-speed-value');
-    const button = document.getElementById('reload');
     const finalVals = document.getElementById('final-vals');
 
-    minSlider.addEventListener('input', reloadWebGL);
-    maxSlider.addEventListener('input', reloadWebGL);
-    animSpeed.addEventListener('input', reloadWebGL);
-    button.addEventListener("click", reloadWebGL);
     canvas.addEventListener('click', function (event) {
         handleClick(event, canvas);
     });
@@ -24,36 +13,13 @@ const main = function () {
     reloadWebGL();
 
     function reloadWebGL() {
-        const minSliderValue = minSlider.value;
-        const maxSliderValue = maxSlider.value;
-        const animSpeedValue = animSpeed.value;
-        minSliderText.textContent = 'Min circle count: ' + minSliderValue;
-        maxSliderText.textContent = 'Max circle count: ' + maxSliderValue;
-        animSpeedText.textContent = 'Animation Speed: ' + animSpeedValue;
+        const minSliderValue = 3;
+        const maxSliderValue = 8;
+        const animSpeedValue = 2;
         circGen(canvas, minSliderValue, maxSliderValue, animSpeedValue, finalVals);
+        document.getElementById('game-state').textContent = "Click on all the bacteria to destroy them!"
+        omaeWaMou = false;
     }
 };
 
-function handleClick(event, canvas) {
-    const canvasRect = canvas.getBoundingClientRect();
 
-    const mouseX = event.clientX - canvasRect.left;
-    const mouseY = event.clientY - canvasRect.top;
-
-    const webglX = (mouseX / canvas.width) * 2 - 1;
-    const webglY = 1 - (mouseY / canvas.height) * 2;
-
-    killBacteria(webglX, webglY);
-}
-
-function killBacteria(clickX, clickY) {
-    randomCircles.forEach(randomCircle => {
-        const xDist = Math.pow(Math.abs(clickX - randomCircle.centerX), 2);
-        const yDist = Math.pow(Math.abs(clickY - randomCircle.centerY), 2);
-
-        if (Math.sqrt(xDist + yDist) < randomCircle.radius) {
-            const targetcircle = randomCircles.indexOf(randomCircle);
-            randomCircles.splice(targetcircle, 1);
-        }
-    });
-}
