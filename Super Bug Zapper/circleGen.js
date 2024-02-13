@@ -30,7 +30,6 @@ const circGen = async function (canvas, minCircCount, maxCircCount, animSpeed, f
         const currentTime = performance.now();
         const elapsed = (currentTime - startTime) * (animSpeed) / 2000;
         randomCircles.forEach((randomCircle) => {
-            console.log(elapsed);
             drawAndGrowCircle(elapsed, randomCircle, mainCircleRadius, mainCircleSegments, gl, posnAttribLoc, program);
         });
         handleCollisions();
