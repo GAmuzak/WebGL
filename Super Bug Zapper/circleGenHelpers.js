@@ -50,7 +50,7 @@ function generateRandomCircles(mainCircleRadius, minCircCount, maxCircCount, fin
         const centerX = mainCircleRadius * Math.cos(randomAngle);
         const centerY = mainCircleRadius * Math.sin(randomAngle);
 
-        const randomCircle = { centerX: centerX, centerY: centerY, color: randomColor, maxRadius: maxRadius};
+        const randomCircle = { centerX: centerX, centerY: centerY, color: randomColor, maxRadius: maxRadius };
 
         randomCircles.push(randomCircle);
     }
@@ -75,4 +75,23 @@ function getRandomColor() {
     const g = Math.random();
     const b = Math.random();
     return [r, g, b, 1.0];
+}
+
+function checkCollision(circle1, circle2) {
+    var dx = circle1.centerX - circle2.centerX;
+    var dy = circle1.centerY - circle2.centerY;
+    var distance = Math.sqrt(dx * dx + dy * dy);
+    return distance < circle1.radius + circle2.radius;
+}
+
+function handleCollisions() {
+    for (i = 0; i < randomCircles.length; i++) {
+        for (j = i + 1; j < randomCircles.length; j++) {
+            if (checkCollision(randomCircles[i], randomCircles[j])) {
+                firstCircle = randomCircles.indexOf(randomCircles[i]);
+                secondCircle = randomCircles.indexOf(randomCircles[j]);
+                randomCircles.splice(firstCircle < secondCircle ? secondCircle : firstCircle, 1);
+            }
+        }
+    }
 }

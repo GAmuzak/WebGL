@@ -32,6 +32,7 @@ const circGen = async function (canvas, minCircCount, maxCircCount, animSpeed, f
         randomCircles.forEach((randomCircle) => {
             drawAndGrowCircle(elapsed, randomCircle, mainCircleRadius, mainCircleSegments, gl, posnAttribLoc, program);
         });
+        handleCollisions();
         if (elapsed < 5) {
             requestAnimationFrame(animate);
         }
