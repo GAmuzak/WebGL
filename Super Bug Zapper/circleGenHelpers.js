@@ -39,7 +39,8 @@ function generateMainCircle(gl, posnAttribLoc, program, radius, segments) {
 }
 
 function generateRandomCircles(mainCircleRadius, minCircCount, maxCircCount, finalVals) {
-    const randomCircles = [];
+    var randomCircles = [];
+    const maxRadius = 0.2;
     const numRandomCircles = getRandomInt(minCircCount, maxCircCount);
     finalVals.textContent = 'Loaded program with circle count: ' + numRandomCircles;
     for (let i = 0; i < numRandomCircles; i++) {
@@ -49,7 +50,7 @@ function generateRandomCircles(mainCircleRadius, minCircCount, maxCircCount, fin
         const centerX = mainCircleRadius * Math.cos(randomAngle);
         const centerY = mainCircleRadius * Math.sin(randomAngle);
 
-        const randomCircle = { centerX: centerX, centerY: centerY, color: randomColor, };
+        const randomCircle = { centerX: centerX, centerY: centerY, color: randomColor, maxRadius: maxRadius};
 
         randomCircles.push(randomCircle);
     }

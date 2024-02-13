@@ -1,6 +1,8 @@
 /// <reference path = "utils.js"/>
 /// <reference path = "circleGenHelpers.js"/>
 
+var randomCircles;
+
 const circGen = async function (canvas, minCircCount, maxCircCount, animSpeed, finalVals) {
     // /** @type {HTMLCanvasElement} */
     // const canvas = document.getElementById("webgl-canvas");
@@ -15,7 +17,7 @@ const circGen = async function (canvas, minCircCount, maxCircCount, animSpeed, f
     const mainCircleRadius = 0.8;
     const mainCircleSegments = 360;
 
-    const randomCircles = generateRandomCircles(mainCircleRadius, minCircCount, maxCircCount, finalVals);
+    randomCircles = generateRandomCircles(mainCircleRadius, minCircCount, maxCircCount, finalVals);
 
     const posnAttribLoc = gl.getAttribLocation(program, "vertPosition");
     gl.enableVertexAttribArray(posnAttribLoc);
@@ -36,18 +38,19 @@ const circGen = async function (canvas, minCircCount, maxCircCount, animSpeed, f
         }
     }
     animate();
-}; 
+};
 
 function drawAndGrowCircle(elapsed, randomCircle, mainCircleRadius, mainCircleSegments, gl, posnAttribLoc, program) {
-    const growingRadius = Math.min(elapsed / 5, 1.0) * 0.2 + 0.0;
+    const growingRadius = Math.min(elapsed / 5, 1.0) * randomCircle.maxRadius + 0.0;
     randomCircle.radius = growingRadius;
 
     const randomCirclePositions = generateMainCirclePositions(mainCircleRadius, mainCircleSegments);
 
-    for (let j = 0; j < randomCirclePositions.length; j += 2) {
-        randomCirclePositions[j] = randomCircle.centerX + randomCircle.radius * randomCirclePositions[j];
-        randomCirclePositions[j + 1] = randomCircle.centerY + randomCircle.radius * randomCirclePositions[j + 1];
+    for (let i = 0; i < randomCirclePositions.length; i += 2) {
+        randomCirclePositions[i] = randomCircle.centerX + randomCircle.radius * randomCirclePositions[i];
+        randomCirclePositions[i + 1] = randomCircle.centerY + randomCircle.radius * randomCirclePositions[i + 1];
     }
+
 
     const randomCircleBuffer = createBuffer(gl, randomCirclePositions);
 

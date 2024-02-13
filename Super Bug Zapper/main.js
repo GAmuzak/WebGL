@@ -21,19 +21,19 @@ const main = function () {
         handleClick(event, canvas);
     });
 
-    reloadWebGL(canvas, minSlider, maxSlider, animSpeed, minSliderText, maxSliderText, animSpeedText, finalVals);
-    
+    reloadWebGL();
+
+    function reloadWebGL() {
+        const minSliderValue = minSlider.value;
+        const maxSliderValue = maxSlider.value;
+        const animSpeedValue = animSpeed.value;
+        minSliderText.textContent = 'Min circle count: ' + minSliderValue;
+        maxSliderText.textContent = 'Max circle count: ' + maxSliderValue;
+        animSpeedText.textContent = 'Animation Speed: ' + animSpeedValue;
+        circGen(canvas, minSliderValue, maxSliderValue, animSpeedValue, finalVals);
+    }
 };
 
-function reloadWebGL(canvas, minSlider, maxSlider, animSpeed, minSliderText, maxSliderText, animSpeedText, finalVals) {
-    const minSliderValue = minSlider.value;
-    const maxSliderValue = maxSlider.value;
-    const animSpeedValue = animSpeed.value;
-    minSliderText.textContent = 'Min circle count: ' + minSliderValue;
-    maxSliderText.textContent = 'Max circle count: ' + maxSliderValue;
-    animSpeedText.textContent = 'Animation Speed: ' + animSpeedValue;
-    circGen(canvas, minSliderValue, maxSliderValue, animSpeedValue, finalVals);
-}
 
 function handleClick(event, canvas) {
     const canvasRect = canvas.getBoundingClientRect();
@@ -45,4 +45,6 @@ function handleClick(event, canvas) {
     const webglY = 1 - (mouseY / canvas.height) * 2;
 
     console.log("WebGL click at (x:", webglX, ", y:", webglY, ")");
+
+    console.log(randomCircles[2].radius);
 }
