@@ -28,8 +28,9 @@ const circGen = async function (canvas, minCircCount, maxCircCount, animSpeed, f
         gl.useProgram(program);
         generateMainCircle(gl, posnAttribLoc, program, mainCircleRadius, mainCircleSegments);
         const currentTime = performance.now();
-        const elapsed = (currentTime - startTime) * (animSpeed) / 3000;
+        const elapsed = (currentTime - startTime) * (animSpeed) / 2000;
         randomCircles.forEach((randomCircle) => {
+            console.log(elapsed);
             drawAndGrowCircle(elapsed, randomCircle, mainCircleRadius, mainCircleSegments, gl, posnAttribLoc, program);
         });
         handleCollisions();
@@ -44,8 +45,14 @@ const circGen = async function (canvas, minCircCount, maxCircCount, animSpeed, f
 };
 
 function drawAndGrowCircle(elapsed, randomCircle, mainCircleRadius, mainCircleSegments, gl, posnAttribLoc, program) {
-    const growingRadius = Math.min(elapsed / 5, 1.0) * randomCircle.maxRadius + 0.0;
-    randomCircle.radius = growingRadius;
+    const waitTime = randomCircles.indexOf(randomCircle) * 0.3;
+    if (elapsed < waitTime) {
+        randomCircle.radius = 0;
+    }
+    else {
+        const growingRadius = Math.min(elapsed / 5, 1.0) * randomCircle.maxRadius + 0.0;
+        randomCircle.radius = growingRadius;
+    }
 
     const randomCirclePositions = generateMainCirclePositions(mainCircleRadius, mainCircleSegments);
 

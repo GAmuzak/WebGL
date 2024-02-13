@@ -81,7 +81,7 @@ function checkCollision(circle1, circle2) {
     var dx = circle1.centerX - circle2.centerX;
     var dy = circle1.centerY - circle2.centerY;
     var distance = Math.sqrt(dx * dx + dy * dy);
-    return distance < circle1.radius + circle2.radius;
+    return distance < 0.8*(circle1.radius + circle2.radius); //not sure why, but this is visually more accurate
 }
 
 function handleCollisions() {
