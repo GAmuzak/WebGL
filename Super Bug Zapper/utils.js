@@ -50,3 +50,15 @@ function setGLProgram(vertexShader, fragmentShader, gl) {
     }
     return program;
 }
+
+var gameData;
+
+var xhr = new XMLHttpRequest();
+xhr.overrideMimeType("application/json");
+xhr.open('GET', './gameData.json', true);
+xhr.onreadystatechange = function () {
+    if (xhr.readyState == 4 && xhr.status == "200") {
+        gameData = JSON.parse(xhr.responseText);
+    }
+};
+xhr.send(null);

@@ -44,7 +44,7 @@ const circGen = async function (canvas, minCircCount, maxCircCount, animSpeed, f
 };
 
 function drawAndGrowCircle(elapsed, randomCircle, mainCircleRadius, mainCircleSegments, gl, posnAttribLoc, program) {
-    const waitTime = randomCircles.indexOf(randomCircle) * 0.3;
+    const waitTime = randomCircles.indexOf(randomCircle) * 0.5;
     if (elapsed < waitTime) {
         randomCircle.radius = 0;
     }
