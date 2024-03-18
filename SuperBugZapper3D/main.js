@@ -9,6 +9,7 @@ var prevY;
 var dOfX = 0;
 var dOfY = 0;
 var isDragging = false;
+var bacteriaCount = 30;
 
 var uniformModelMatrix = [];
 var uniformViewMatrix = [];
@@ -28,10 +29,10 @@ function main() {
     const gl = canvas.getContext("webgl");
     webGLSetup(gl);
 
-    var view_matrix = new Matrix4();
+    var viewMatrix = new Matrix4();
     var projection_matrix = new Matrix4();
 
-    view_matrix.elements[14] = view_matrix.elements[14] - 6;
+    viewMatrix.elements[14] = viewMatrix.elements[14] - 6;
     projection_matrix.setPerspective(80, canvas.width / canvas.height, 1, 100);
 
     uniformModelMatrix = gl.getUniformLocation(gl.program, "mmatrix");
@@ -82,6 +83,24 @@ function main() {
     gl.clearColor(rBG, gBG, bBG, 1.0);
     gl.enable(gl.DEPTH_TEST);
 
+    var sphereResolution = 100;
+
+    var randomTheta = [];
+    var randomPhi = [];
+    var randomR = [];
+    var randomG = [];
+    var randomB = [];
+    var bacteriaSizes = []
+
+    for (let i = 0; i < bacteriaCount; i++) {
+        randomTheta.push(getRandomVal(360));
+        randomPhi.push(getRandomVal(360));
+        randomR.push(getRandomVal());
+        randomG.push(getRandomVal());
+        randomB.push(getRandomVal());
+        bacteriaSizes.push(getRandomVal(0.05 * sphereResolution));
+    }
+
     var tick = function () {
         currrentTime = Date.now();
 
@@ -89,32 +108,24 @@ function main() {
         gl.clearColor(rBG, gBG, bBG, 1.0);
         gl.enable(gl.DEPTH_TEST);
 
-        var model_matrix = new Matrix4();
+        var modelMatrix = new Matrix4();
 
-        model_matrix.rotate((180 * matrixPhi) / Math.PI, 1, 0, 0);
-        model_matrix.rotate((180 * matrixTheta) / Math.PI, 0, 1, 0);
+        modelMatrix.rotate((180 * matrixPhi) / Math.PI, 1, 0, 0);
+        modelMatrix.rotate((180 * matrixTheta) / Math.PI, 0, 1, 0);
 
-        var sphere_resolution = 45;
-        var drawing_area = Math.floor(0.05 * sphere_resolution);
+        var n = initVertexBuffers(gl, 3, sphereResolution, 0, 0, 1, 1, 1);
 
-        var n = initVertexBuffers(gl, 3, sphere_resolution, 0, 0, 1,1, 1);
+        draw(gl, modelMatrix, viewMatrix, projection_matrix, n);
 
-        draw(gl, model_matrix, view_matrix, projection_matrix, n);
+        for (let i = 0; i < bacteriaCount; i++) {
+            var n = initVertexBuffers(gl, (3.02 + 0.002 * i), bacteriaSizes[i], randomTheta[i], randomPhi[i], randomR[i], randomG[i], randomB[i]);
+            draw(gl, modelMatrix, viewMatrix, projection_matrix, n);
+        }
 
-        var n = initVertexBuffers(gl, 3.03, drawing_area, 20, 20, 0, 1, 0);
-        draw(gl, model_matrix, view_matrix, projection_matrix, n);
-        var n = initVertexBuffers(gl, 3.03, drawing_area, 40, 30, 0, 1, 0);
-        draw(gl, model_matrix, view_matrix, projection_matrix, n);
-        var n = initVertexBuffers(gl, 3.03, drawing_area, 20, 60, 0, 1, 0);
-        draw(gl, model_matrix, view_matrix, projection_matrix, n);
-        var n = initVertexBuffers(gl, 3.03, drawing_area, 80, 70, 0, 1, 0);
-        draw(gl, model_matrix, view_matrix, projection_matrix, n);
+        var n = initVertexBuffers(gl, 3, sphereResolution, 0, 0, 0, 0, 0);
 
-
-        var n = initVertexBuffers(gl, 3, sphere_resolution, 0, 0, 0, 0, 0);
-
-        gl.uniformMatrix4fv(uniformModelMatrix, false, model_matrix.elements);
-        gl.uniformMatrix4fv(uniformViewMatrix, false, view_matrix.elements);
+        gl.uniformMatrix4fv(uniformModelMatrix, false, modelMatrix.elements);
+        gl.uniformMatrix4fv(uniformViewMatrix, false, viewMatrix.elements);
         gl.uniformMatrix4fv(uniformProjectionMatrix, false, projection_matrix.elements);
         gl.drawArrays(gl.POINTS, 0, n);
 

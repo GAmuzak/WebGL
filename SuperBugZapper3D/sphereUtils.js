@@ -97,14 +97,14 @@ function initArrayBuffer(gl, attribute, data, type, num) {
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
     gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
 
-    var a_attribute = gl.getAttribLocation(gl.program, attribute);
-    if (a_attribute < 0) {
+    var aAttribute = gl.getAttribLocation(gl.program, attribute);
+    if (aAttribute < 0) {
         console.log('Failed to get the storage location of ' + attribute);
         return false;
     }
-    gl.vertexAttribPointer(a_attribute, num, type, false, 0, 0);
+    gl.vertexAttribPointer(aAttribute, num, type, false, 0, 0);
 
-    gl.enableVertexAttribArray(a_attribute);
+    gl.enableVertexAttribArray(aAttribute);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
@@ -114,4 +114,8 @@ function giveCloseCol(val) {
     const range = 0.05;
     const newVal = Math.max(0, Math.min(1, val + (Math.random() * range * 2 - range)));
     return newVal;
+}
+
+function getRandomVal(scale = 1) {
+    return Math.random() * scale;
 }
