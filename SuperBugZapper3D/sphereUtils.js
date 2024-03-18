@@ -111,7 +111,7 @@ function initArrayBuffer(gl, attribute, data, type, num) {
     return true;
 }
 function giveCloseCol(val) {
-    const range = 0.05;
+    const range = 0.01;
     const newVal = Math.max(0, Math.min(1, val + (Math.random() * range * 2 - range)));
     return newVal;
 }

@@ -18,9 +18,9 @@ var uniformProjectionMatrix = [];
 var currrentTime = Date.now();
 const start_time = currrentTime;
 
-var rBG = 0;
-var gBG = 0;
-var bBG = 0;
+var redBackground = 0;
+var greenBackground = 0;
+var blueBackground = 0;
 
 function main() {
     /** @type {HTMLCanvasElement} */
@@ -68,6 +68,9 @@ function main() {
 
         prevX = ev.pageX;
         prevY = ev.pageY;
+        redBackground = giveCloseCol(redBackground);
+        blueBackground = giveCloseCol(blueBackground);
+        greenBackground = giveCloseCol(greenBackground);
 
     };
 
@@ -80,7 +83,7 @@ function main() {
     canvas.addEventListener("mouseup", mouse_up, false);
 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    gl.clearColor(rBG, gBG, bBG, 1.0);
+    gl.clearColor(redBackground, greenBackground, blueBackground, 1.0);
     gl.enable(gl.DEPTH_TEST);
 
     var sphereResolution = 100;
@@ -105,7 +108,7 @@ function main() {
         currrentTime = Date.now();
 
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        gl.clearColor(rBG, gBG, bBG, 1.0);
+        gl.clearColor(redBackground, greenBackground, blueBackground, 1.0);
         gl.enable(gl.DEPTH_TEST);
 
         var modelMatrix = new Matrix4();
