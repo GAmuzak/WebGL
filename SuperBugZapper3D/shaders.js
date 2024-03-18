@@ -1,3 +1,5 @@
+/// <reference path = "utils.js"/>
+
 var vertexShaderData =
     'attribute vec4 a_position;\n' +
     'attribute vec4 a_color;\n' +
@@ -9,7 +11,7 @@ var vertexShaderData =
 
     'void main() {\n' +
     'gl_Position = pmatrix * vmatrix * mmatrix * a_position;\n' +
-    'gl_PointSize = 2.0;\n' +
+    'gl_PointSize = 3.0;\n' +
     '    v_color = a_color;\n' +
     '}\n';
 

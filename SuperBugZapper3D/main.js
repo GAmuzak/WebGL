@@ -1,30 +1,26 @@
-var theta_for_model_matrix = 0;
-var phi_for_model_matrix = 0;
-var previous_x;
-var previous_y;
-var d_x = 0;
-var d_y = 0;
-var is_dragging = false;
+/// <reference path = "cuon-matrix.js"/>
+/// <reference path = "utils.js"/>
 
-var u_model_matrix = [];
-var u_view_matrix = [];
-var u_projection_matrix = [];
+var matrixTheta = 0;
+var matrixPhi = 0;
+var prevX;
+var prevY;
+var dOfX = 0;
+var dOfY = 0;
+var isDragging = false;
 
-var date_now = Date.now();
-const start_time = date_now;
+var uniformModelMatrix = [];
+var uniformViewMatrix = [];
+var uniformProjectionMatrix = [];
+
+var currrentTime = Date.now();
+const start_time = currrentTime;
 function main() {
-
-    var canvas = document.getElementById('webgl');
-
-    var gl = getWebGLContext(canvas);
-    if (!gl) {
-        console.log('Failed to get the rendering context for WebGL');
-        return;
-    }
-    if (!initShaders(gl, vertexShaderData, fragmentShaderData)) {
-        console.log('Failed to intialize shaders.');
-        return;
-    }
+    /** @type {HTMLCanvasElement} */
+    const canvas = document.getElementById('webgl');
+    /** @type {WebGLRenderingContext} */
+    const gl = canvas.getContext("webgl");
+    webGLSetup(gl);
 
     var view_matrix = new Matrix4();
     var projection_matrix = new Matrix4();
@@ -32,44 +28,44 @@ function main() {
     view_matrix.elements[14] = view_matrix.elements[14] - 6;
     projection_matrix.setPerspective(80, canvas.width / canvas.height, 1, 100);
 
-    u_model_matrix = gl.getUniformLocation(gl.program, "mmatrix");
-    u_view_matrix = gl.getUniformLocation(gl.program, "vmatrix");
-    u_projection_matrix = gl.getUniformLocation(gl.program, "pmatrix");
+    uniformModelMatrix = gl.getUniformLocation(gl.program, "mmatrix");
+    uniformViewMatrix = gl.getUniformLocation(gl.program, "vmatrix");
+    uniformProjectionMatrix = gl.getUniformLocation(gl.program, "pmatrix");
 
-    if (!u_model_matrix || !u_view_matrix || !u_projection_matrix) {
+    if (!uniformModelMatrix || !uniformViewMatrix || !uniformProjectionMatrix) {
         console.log('Failed to get the uniform location');
         return -1;
     }
 
     var mouse_down = function (ev) {
         ev.preventDefault();
-        is_dragging = true;
+        isDragging = true;
 
-        previous_x = ev.pageX;
-        previous_y = ev.pageY;
+        prevX = ev.pageX;
+        prevY = ev.pageY;
 
         return false;
     };
 
     var mouse_move = function (ev) {
-        if (!is_dragging) return false;
+        if (!isDragging) return false;
         ev.preventDefault();
 
         speed_factor = 1.2;
 
-        d_x = (ev.pageX - previous_x) / canvas.width,
-            d_y = (ev.pageY - previous_y) / canvas.height;
+        dOfX = (ev.pageX - prevX) / canvas.width,
+            dOfY = (ev.pageY - prevY) / canvas.height;
 
-        theta_for_model_matrix += (speed_factor * d_x);
-        phi_for_model_matrix += (speed_factor * d_y);
+        matrixTheta += (speed_factor * dOfX);
+        matrixPhi += (speed_factor * dOfY);
 
-        previous_x = ev.pageX;
-        previous_y = ev.pageY;
+        prevX = ev.pageX;
+        prevY = ev.pageY;
 
     };
 
     var mouse_up = function () {
-        is_dragging = false;
+        isDragging = false;
     };
 
     canvas.addEventListener("mousedown", mouse_down, false);
@@ -81,7 +77,7 @@ function main() {
     gl.enable(gl.DEPTH_TEST);
 
     var tick = function () {
-        date_now = Date.now();
+        currrentTime = Date.now();
 
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         gl.clearColor(0, 0, 0, 1);
@@ -89,8 +85,8 @@ function main() {
 
         var model_matrix = new Matrix4();
 
-        model_matrix.rotate((180 * phi_for_model_matrix) / Math.PI, 1, 0, 0);
-        model_matrix.rotate((180 * theta_for_model_matrix) / Math.PI, 0, 1, 0);
+        model_matrix.rotate((180 * matrixPhi) / Math.PI, 1, 0, 0);
+        model_matrix.rotate((180 * matrixTheta) / Math.PI, 0, 1, 0);
 
         var sphere_resolution = 45;
         var drawing_area = Math.floor(0.05 * sphere_resolution);
@@ -114,9 +110,9 @@ function main() {
             console.log('Failed to set the vertex information');
             return;
         }
-        gl.uniformMatrix4fv(u_model_matrix, false, model_matrix.elements);
-        gl.uniformMatrix4fv(u_view_matrix, false, view_matrix.elements);
-        gl.uniformMatrix4fv(u_projection_matrix, false, projection_matrix.elements);
+        gl.uniformMatrix4fv(uniformModelMatrix, false, model_matrix.elements);
+        gl.uniformMatrix4fv(uniformViewMatrix, false, view_matrix.elements);
+        gl.uniformMatrix4fv(uniformProjectionMatrix, false, projection_matrix.elements);
         gl.drawArrays(gl.POINTS, 0, n);
 
         requestAnimationFrame(tick, canvas);
@@ -124,9 +120,9 @@ function main() {
     tick();
 }
 function draw(gl, modelMatrix, viewMatrix, projectionMatrix, n) {
-    gl.uniformMatrix4fv(u_model_matrix, false, modelMatrix.elements);
-    gl.uniformMatrix4fv(u_view_matrix, false, viewMatrix.elements);
-    gl.uniformMatrix4fv(u_projection_matrix, false, projectionMatrix.elements);
+    gl.uniformMatrix4fv(uniformModelMatrix, false, modelMatrix.elements);
+    gl.uniformMatrix4fv(uniformViewMatrix, false, viewMatrix.elements);
+    gl.uniformMatrix4fv(uniformProjectionMatrix, false, projectionMatrix.elements);
     gl.drawElements(gl.TRIANGLES, n, gl.UNSIGNED_SHORT, 0);
 }
 

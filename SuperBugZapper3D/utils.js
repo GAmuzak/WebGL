@@ -1,3 +1,5 @@
+/// <reference path = "shaders.js"/>
+
 function webGLSetup(gl) {
     checkGLLoad(gl);
 
@@ -10,7 +12,8 @@ function webGLSetup(gl) {
     const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderText);
     const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderText);
     const program = setGLProgram(vertexShader, fragmentShader, gl);
-    return program;
+    gl.useProgram(program);
+    gl.program = program;
 }
 
 function checkGLLoad(gl) {
