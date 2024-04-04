@@ -1,3 +1,5 @@
+/// <reference path = "sphereUtils.js"/>
+
 var VSHADER_SOURCE =
     'attribute vec4 a_Position;\n' + 
     'uniform mat4 Pmatrix;' + 

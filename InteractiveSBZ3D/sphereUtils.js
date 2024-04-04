@@ -1,3 +1,7 @@
+/// <reference path = "main.js"/>
+/// <reference path = "shaders.js"/>
+
+
 function initVertexBuffers(gl, radius, growth, alpha, beta, r, g, b) { // Create a sphere
     var sin_a = Math.sin(alpha * Math.PI / 180.0);
     var cos_a = Math.cos(alpha * Math.PI / 180.0);

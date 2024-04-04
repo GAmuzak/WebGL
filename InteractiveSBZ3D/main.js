@@ -1,6 +1,5 @@
 /// <reference path = "sphereUtils.js"/>
 
-
 var drag = false;
 var old_x, old_y;
 var dX = 0, dY = 0;
@@ -19,17 +18,14 @@ var mouseClickLoc = [];
 var result = "";
 
 for (let j = 0; j < 7; j++) {
-  rand_alpha.push(Math.floor(Math.random() * 360));
-  rand_beta.push(Math.floor(Math.random() * 360));
+	rand_alpha.push(Math.floor(Math.random() * 360));
+	rand_beta.push(Math.floor(Math.random() * 360));
+	randCols = getRandomCol();
+	console.log(randCols[0] * 255 + " " + randCols[1] * 255 + " " + randCols[2] * 255 + " ");
+	rand_col_r.push(randCols[0]);
+	rand_col_g.push(randCols[1]);
+	rand_col_b.push(randCols[2]);
 }
-
-rand_col_r.push(1); rand_col_g.push(1); rand_col_b.push(1);
-rand_col_r.push(1); rand_col_g.push(1); rand_col_b.push(0);
-rand_col_r.push(1); rand_col_g.push(0); rand_col_b.push(1);
-rand_col_r.push(1); rand_col_g.push(0); rand_col_b.push(0);
-rand_col_r.push(0); rand_col_g.push(1); rand_col_b.push(1);
-rand_col_r.push(0); rand_col_g.push(1); rand_col_b.push(0);
-rand_col_r.push(0); rand_col_g.push(0); rand_col_b.push(1);
 
 
 function main() {
@@ -38,58 +34,58 @@ function main() {
 
 	gl = webGLSetup(canvas);
 
-    var currentSize = 1;
+	var currentSize = 1;
 
-    var mouseDown = function (e) {
+	var mouseDown = function (e) {
 		drag = true;
 		old_x = e.pageX, old_y = e.pageY;
 
 		e.preventDefault();
 		return false;
-    };
+	};
 
-    var mouseUp = function (e) {
-      	drag = false;
-    };
+	var mouseUp = function (e) {
+		drag = false;
+	};
 
-    var mouseMove = function (e) {
+	var mouseMove = function (e) {
 		if (!drag) return false;
 		dX = (e.pageX - old_x) * 2 * Math.PI / canvas.width,
-		dY = (e.pageY - old_y) * 2 * Math.PI / canvas.height;
+			dY = (e.pageY - old_y) * 2 * Math.PI / canvas.height;
 		THETA += dX;
 		PHI += dY;
 		old_x = e.pageX, old_y = e.pageY;
 		e.preventDefault();
-    };
+	};
 
-    canvas.addEventListener("mousedown", mouseDown, false);
-    canvas.addEventListener("mouseup", mouseUp, false);
-    canvas.addEventListener("mouseout", mouseUp, false);
-    canvas.addEventListener("mousemove", mouseMove, false);
+	canvas.addEventListener("mousedown", mouseDown, false);
+	canvas.addEventListener("mouseup", mouseUp, false);
+	canvas.addEventListener("mouseout", mouseUp, false);
+	canvas.addEventListener("mousemove", mouseMove, false);
 
-    var viewMatrix = new Matrix4(); 
-    var projMatrix = new Matrix4(); 
+	var viewMatrix = new Matrix4();
+	var projMatrix = new Matrix4();
 
-    projMatrix.setPerspective(80, canvas.width / canvas.height, 1, 100);
-    viewMatrix.elements[14] = viewMatrix.elements[14] - 6; 
+	projMatrix.setPerspective(80, canvas.width / canvas.height, 1, 100);
+	viewMatrix.elements[14] = viewMatrix.elements[14] - 6;
 
-    THETA = 0,
-    PHI = 0;
+	THETA = 0,
+		PHI = 0;
 
-    u_ModelMatrix = gl.getUniformLocation(gl.program, "Mmatrix");
-    u_ViewMatrix = gl.getUniformLocation(gl.program, "Vmatrix");
-    u_ProjectionMatrix = gl.getUniformLocation(gl.program, "Pmatrix");
+	u_ModelMatrix = gl.getUniformLocation(gl.program, "Mmatrix");
+	u_ViewMatrix = gl.getUniformLocation(gl.program, "Vmatrix");
+	u_ProjectionMatrix = gl.getUniformLocation(gl.program, "Pmatrix");
 
-    if (!u_ModelMatrix || !u_ViewMatrix || !u_ProjectionMatrix) {
-      console.log('Failed to get the storage location');
-      return;
-    }
+	if (!u_ModelMatrix || !u_ViewMatrix || !u_ProjectionMatrix) {
+		console.log('Failed to get the storage location');
+		return;
+	}
 
-    var gamescore = 0.0;
-    result = "O";
+	var gamescore = 0.0;
+	result = "O";
 
-    var frame_counter = 0;
-    var tick = function () {
+	var frame_counter = 0;
+	var tick = function () {
 
 		if (result == "O") {
 			document.getElementById("score").innerHTML = gamescore;
@@ -127,21 +123,21 @@ function main() {
 		var growth = Math.floor(currentSize);
 
 		for (let i = 0; i < rand_alpha.length; i++) {
-				var n = initVertexBuffers(gl, (3 + 0.001 * (i + 1)), growth, rand_alpha[i], rand_beta[i], rand_col_r[i], rand_col_g[i], rand_col_b[i]);
-				if (n < 0) {
+			var n = initVertexBuffers(gl, (3 + 0.001 * (i + 1)), growth, rand_alpha[i], rand_beta[i], rand_col_r[i], rand_col_g[i], rand_col_b[i]);
+			if (n < 0) {
 				console.log('Failed to set the vertex information');
 				return;
-				}
-				draw(gl, modelMatrix, viewMatrix, projMatrix, n);
+			}
+			draw(gl, modelMatrix, viewMatrix, projMatrix, n);
 		}
 
 		frame_counter += 1;
 		requestAnimationFrame(tick, canvas);
-    };
-    tick();
+	};
+	tick();
 }
 
-function webGLSetup(canvas){
+function webGLSetup(canvas) {
 	gl = canvas.getContext("webgl", { preserveDrawingBuffer: true });
 
 	if (!gl) {
@@ -191,14 +187,16 @@ function click(ev, gl, canvas, currentSize) {
 		pixels
 	);
 
+	console.log(pixels[0] + " " + pixels[1] + " " + pixels[2]);
+
 	for (let i = rand_alpha.length; i >= 0; i--) {
 		r = rand_col_r[i] * 255
 		g = rand_col_g[i] * 255
 		b = rand_col_b[i] * 255
 
-		if (pixels[0] == r && pixels[1] == g && pixels[2] == b) {
+		if (approximatelyEqual(pixels[0], r, 0.6) && approximatelyEqual(pixels[1], g, 0.6) && approximatelyEqual(pixels[2], b, 0.6)) {
 			if (currentSize < 30) {
-				rand_alpha.splice(i, 1); 
+				rand_alpha.splice(i, 1);
 				rand_beta.splice(i, 1);
 				rand_col_r.splice(i, 1);
 				rand_col_g.splice(i, 1);
@@ -206,4 +204,19 @@ function click(ev, gl, canvas, currentSize) {
 			}
 		}
 	}
+}
+
+function getRandomCol(scale = 1) {
+	const min = 0.03;
+	const max = 0.98;
+	let value;
+	do {
+		value = [Math.random() * scale, Math.random() * scale, Math.random() * scale];
+	} while (value.some(val => val <= min || val >= max || val === 0.5));
+	return value;
+}
+
+
+function approximatelyEqual(a, b, epsilon) {
+	return Math.abs(a - b) < epsilon;
 }
