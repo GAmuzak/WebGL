@@ -114,3 +114,22 @@ function rotateY(m, angle) {
     m[6] = c * m[6] - s * mv4;
     m[10] = c * m[10] - s * mv8;
 }
+
+function webGLSetup(canvas) {
+    gl = canvas.getContext("webgl", { preserveDrawingBuffer: true });
+
+    if (!gl) {
+        console.log('Failed to get the rendering context for WebGL');
+        return;
+    }
+
+    if (!initShaders(gl, vertexShaderData, fragmentShaderData)) {
+        console.log('Failed to intialize shaders.');
+        return;
+    }
+    return gl;
+}
+
+function approximatelyEqual(a, b, epsilon) {
+    return Math.abs(a - b) < epsilon;
+}

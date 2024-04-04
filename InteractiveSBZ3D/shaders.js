@@ -1,11 +1,11 @@
 /// <reference path = "sphereUtils.js"/>
 
-var VSHADER_SOURCE =
-    'attribute vec4 a_Position;\n' + 
-    'uniform mat4 Pmatrix;' + 
+var vertexShaderData =
+    'attribute vec4 a_Position;\n' +
+    'uniform mat4 Pmatrix;' +
     'uniform mat4 Vmatrix;' +
     'uniform mat4 Mmatrix;' +
-    'attribute vec4 a_Color;\n' + 
+    'attribute vec4 a_Color;\n' +
     'varying vec4 v_Color;\n' +
     'void main() {\n' +
     '  gl_Position = Pmatrix * Vmatrix * Mmatrix * a_Position;\n' +
@@ -13,7 +13,7 @@ var VSHADER_SOURCE =
     '}\n';
 
 
-var FSHADER_SOURCE =
+var fragmentShaderData =
     '#ifdef GL_ES\n' +
     'precision mediump float;\n' +
     '#endif\n' +
