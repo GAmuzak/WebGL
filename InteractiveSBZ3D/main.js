@@ -16,12 +16,12 @@ let rand_col_g = []
 let rand_col_b = []
 var mouseClickLoc = [];
 var result = "";
+var currentSize = 1;
 
 for (let j = 0; j < 7; j++) {
 	rand_alpha.push(Math.floor(Math.random() * 360));
 	rand_beta.push(Math.floor(Math.random() * 360));
 	randCols = getRandomCol();
-	console.log(randCols[0] * 255 + " " + randCols[1] * 255 + " " + randCols[2] * 255 + " ");
 	rand_col_r.push(randCols[0]);
 	rand_col_g.push(randCols[1]);
 	rand_col_b.push(randCols[2]);
@@ -31,37 +31,10 @@ for (let j = 0; j < 7; j++) {
 function main() {
 
 	var canvas = document.getElementById('webgl');
-
 	gl = webGLSetup(canvas);
 
-	var currentSize = 1;
+	mouseSetup(canvas);
 
-	var mouseDown = function (e) {
-		drag = true;
-		old_x = e.pageX, old_y = e.pageY;
-
-		e.preventDefault();
-		return false;
-	};
-
-	var mouseUp = function (e) {
-		drag = false;
-	};
-
-	var mouseMove = function (e) {
-		if (!drag) return false;
-		dX = (e.pageX - old_x) * 2 * Math.PI / canvas.width,
-			dY = (e.pageY - old_y) * 2 * Math.PI / canvas.height;
-		THETA += dX;
-		PHI += dY;
-		old_x = e.pageX, old_y = e.pageY;
-		e.preventDefault();
-	};
-
-	canvas.addEventListener("mousedown", mouseDown, false);
-	canvas.addEventListener("mouseup", mouseUp, false);
-	canvas.addEventListener("mouseout", mouseUp, false);
-	canvas.addEventListener("mousemove", mouseMove, false);
 
 	var viewMatrix = new Matrix4();
 	var projMatrix = new Matrix4();
@@ -99,7 +72,7 @@ function main() {
 		if (currentSize > 30 && rand_alpha.length > 1) {
 			document.getElementById("result").innerHTML = "You Lose";
 			result = "L"
-		} else if (rand_alpha.length < 2) {
+		} else if (rand_alpha.length < 1) {
 			document.getElementById("result").innerHTML = "You Win";
 			result = "W"
 		}
@@ -137,6 +110,35 @@ function main() {
 	tick();
 }
 
+function mouseSetup(canvas) {
+	var mouseDown = function (e) {
+		drag = true;
+		old_x = e.pageX, old_y = e.pageY;
+
+		e.preventDefault();
+		return false;
+	};
+
+	var mouseUp = function () {
+		drag = false;
+	};
+
+	var mouseMove = function (e) {
+		if (!drag) return false;
+		dX = (e.pageX - old_x) * 2 * Math.PI / canvas.width,
+			dY = (e.pageY - old_y) * 2 * Math.PI / canvas.height;
+		THETA += dX;
+		PHI += dY;
+		old_x = e.pageX, old_y = e.pageY;
+		e.preventDefault();
+	};
+
+	canvas.addEventListener("mousedown", mouseDown, false);
+	canvas.addEventListener("mouseup", mouseUp, false);
+	canvas.addEventListener("mouseout", mouseUp, false);
+	canvas.addEventListener("mousemove", mouseMove, false);
+}
+
 function webGLSetup(canvas) {
 	gl = canvas.getContext("webgl", { preserveDrawingBuffer: true });
 
@@ -155,7 +157,7 @@ function webGLSetup(canvas) {
 
 var g_last = Date.now();
 function animate(size) {
-	if (result == "L") return size;
+	if (result == "L" || result == "W") return size;
 	var now = Date.now();
 	var elapsed = now - g_last;
 	g_last = now;
@@ -175,19 +177,21 @@ function draw(gl, modelMatrix, viewMatrix, projMatrix, n) {
 
 function click(ev, gl, canvas, currentSize) {
 
+	var rect = canvas.getBoundingClientRect();
+	var x = ev.clientX - rect.left;
+	var y = rect.bottom - ev.clientY;
+
 	var pixels = new Uint8Array(4);
 
 	gl.readPixels(
-		ev.clientX - 10,
-		canvas.height - ev.clientY + 10,
+		x,
+		y,
 		1,
 		1,
 		gl.RGBA,
 		gl.UNSIGNED_BYTE,
 		pixels
 	);
-
-	console.log(pixels[0] + " " + pixels[1] + " " + pixels[2]);
 
 	for (let i = rand_alpha.length; i >= 0; i--) {
 		r = rand_col_r[i] * 255

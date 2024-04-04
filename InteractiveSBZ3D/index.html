@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<title>Super Bug Zapper 3D </title>
-	</head>
 
-	<body onload="main()">
-		<canvas id="webgl" width="400" height="400">
+<head>
+	<meta charset="utf-8" />
+	<title>Super Bug Zapper 3D </title>
+</head>
+
+<body onload="main()" style="text-align: center;">
+	<canvas id="webgl" width="400" height="400">
 		Please use a browser that supports "canvas"
-		</canvas>
-		<div>
-		Game Score: <b id="score"> </b> 
-		</div>
-		<div>
-		<b id="result"> </b> 
-		</div>
+	</canvas>
+	<div style="margin-top: 20px;">
+		Game Score: <b id="score"></b>
+	</div>
+	<div>
+		<b id="result"> </b>
+	</div>
 
-		<script src="cuon-utils.js"></script>
-		<script src="cuon-matrix.js"></script>
-		<script src="shaders.js"></script>
-		<script src="main.js"></script>
-		<script src="sphereUtils.js"></script>
-	</body>
+	<script src="cuon-utils.js"></script>
+	<script src="cuon-matrix.js"></script>
+	<script src="shaders.js"></script>
+	<script src="main.js"></script>
+	<script src="sphereUtils.js"></script>
+</body>
+
 </html>
