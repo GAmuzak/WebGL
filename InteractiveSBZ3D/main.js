@@ -26,6 +26,8 @@ for (let j = 0; j < 7; j++) {
 	rand_col_g.push(randCols[1]);
 	rand_col_b.push(randCols[2]);
 }
+console.log(rand_alpha);
+console.log(rand_beta);
 
 
 function main() {
@@ -86,17 +88,29 @@ function main() {
 		rotateY(modelMatrix, THETA);
 		rotateX(modelMatrix, PHI);
 
-		var n = initVertexBuffers(gl, 3, 180, 0, 0, 0.5, 0.5, 0.5);
+		var n = initVertexBuffers(gl, 3, 180, 0, 0, 0.2, 0.2, 0.2);
 		if (n < 0) {
 			console.log('Failed to set the vertex information');
 			return;
 		}
 		draw(gl, modelMatrix, viewMatrix, projMatrix, n);
 
+		
+
+		for(var i = 0; i<360; i+=36)
+		{
+			for (var j = 0; j < 360; j += 36)
+			{
+				var n = initVertexBuffers(gl, 3 + 0.001, 1, i, j, 1, 1, 1);
+				draw(gl, modelMatrix, viewMatrix, projMatrix, n);
+			}
+		}
+		
+
 		var growth = Math.floor(currentSize);
 
 		for (let i = 0; i < rand_alpha.length; i++) {
-			var n = initVertexBuffers(gl, (3 + 0.001 * (i + 1)), growth, rand_alpha[i], rand_beta[i], rand_col_r[i], rand_col_g[i], rand_col_b[i]);
+			var n = initVertexBuffers(gl, (3 + 0.002 * (i + 1)), growth, rand_alpha[i], rand_beta[i], rand_col_r[i], rand_col_g[i], rand_col_b[i]);
 			if (n < 0) {
 				console.log('Failed to set the vertex information');
 				return;
