@@ -95,17 +95,12 @@ function main() {
 		}
 		draw(gl, modelMatrix, viewMatrix, projMatrix, n);
 
-		
-
-		for(var i = 0; i<360; i+=36)
-		{
-			for (var j = 0; j < 360; j += 36)
-			{
+		for (var i = 0; i < 360; i += 36) {
+			for (var j = 0; j < 360; j += 36) {
 				var n = initVertexBuffers(gl, 3 + 0.001, 1, i, j, 1, 1, 1);
 				draw(gl, modelMatrix, viewMatrix, projMatrix, n);
 			}
 		}
-		
 
 		var growth = Math.floor(currentSize);
 
